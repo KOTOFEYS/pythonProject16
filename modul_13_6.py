@@ -8,18 +8,28 @@ import asyncio
 
 from pyexpat.errors import messages
 
-api = ''
+api = '7675818970:AAGREOEOIX5WdTA0XtEJANLQwc-vvIsBKbE'
 bot = Bot(token = api)
 dp = Dispatcher(bot, storage = MemoryStorage())
 
-start_menu = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="Рассчитать"),KeyboardButton(text="Информация")]],
+start_menu = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="Рассчитать"),KeyboardButton(text="Информация")],
+                                           [KeyboardButton(text="Купить")]],
                          resize_keyboard=True)
 
 kb2 = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text = "Рассчитать норму калорий", callback_data= "Calories"),
      InlineKeyboardButton(text = "Формулы расчёта", callback_data= "formulas")
             ]], resize_keyboard=True)
-
+kb3 = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text = "Product1", callback_data= "product_buying"),
+    InlineKeyboardButton(text = "Product2", callback_data= "product_buying"),
+    InlineKeyboardButton(text = "Product3", callback_data= "product_buying"),
+    InlineKeyboardButton(text = "Product4", callback_data= "product_buying")]],
+    resize_keyboard=True)
+number_1 = 1
+number_2 = 2
+number_3 = 3
+number_4 = 4
 
 class UserState(StatesGroup):
     age = State()
@@ -64,6 +74,31 @@ async def send_calories(message, state):
     calories = 10 * int(data['weight']) + 6,25 * int(data['growth']) - 5 * int(data['age']) + 5
     await message.answer(f'Ваша норма колорий{calories}.')
     await state.finish()
+
+@dp.message_handler(text = "Купить")
+async def get_buying_list(message):
+    await message.answer(f"Название: Product {number_1}  | Описание: описание {number_1} | Цена: {number_1 * 100}")
+    with open('png1/1.png',"rb") as img:
+        await message.answer_photo(img)
+    await message.answer(f"Название: Product {number_2}  | Описание: описание {number_2} | Цена: {number_2 * 100}")
+    with open('png1/2.png','rb') as img:
+        await message.answer_photo(img)
+    await message.answer(f"Название: Product {number_3}  | Описание: описание {number_3} | Цена: {number_3 * 100}")
+    with open('png1/3.jpg','rb') as img:
+        await message.answer_photo(img)
+    await message.answer(f"Название: Product {number_4}  | Описание: описание {number_4} | Цена: {number_4 * 100}")
+    with open('png1/4.png','rb') as img:
+        await message.answer_photo(img)
+    await message.answer("Выберите продукт для покупки:", reply_markup=kb3)
+
+@dp.callback_query_handler(text="product_buying")
+async def send_confirm_message(call):
+    await call.message.answer("Вы успешно приобрели продукт!")
+    await call.answer()
+
+
+
+
 
 
 
